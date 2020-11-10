@@ -1,0 +1,7 @@
+{
+  "name": "Opdracht_3:_RPI_IOs",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
