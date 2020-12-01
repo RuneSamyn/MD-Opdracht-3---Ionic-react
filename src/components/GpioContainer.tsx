@@ -3,14 +3,6 @@ import React, { useState } from 'react';
 import { useGpio } from '../hooks/useGpio';
 import './GpioContainer.css';
 
-var mqtt    = require('mqtt');
-var client  = mqtt.connect('wss://mqtt.wdaan.xyz');
-
-// preciouschicken.com is the MQTT topic
-client.on('connect', () => {
-    client.subscribe('CHANGE_DETECTED');
-});
-
 interface ContainerProps { }
 
 const GpioContainer: React.FC<ContainerProps> = () => {
