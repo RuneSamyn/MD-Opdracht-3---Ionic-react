@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { isPlatform } from '@ionic/react';
+import { useState } from "react";
 
 var mqtt    = require('mqtt');
 var client  = mqtt.connect('wss://mqtt.wdaan.xyz');
@@ -10,7 +9,10 @@ client.on('connect', () => {
 });
 
 export function useGpio() {
-    const [GPIOs, setGPIOs] = useState<{[pin: number]: number}>({14: 0, 15: 0});
+    const [in1, setIn1] = useState<number>(0);
+    const [in2, setIn2] = useState<number>(0);
+    const [out1, setOut1] = useState<number>(0);
+    const [out2, setOut2] = useState<number>(0);
     
     // ask for the state of the outputs
     client.publish("GET_OUTPUT", [2, 3].toString());
@@ -22,12 +24,22 @@ export function useGpio() {
         catch {
             console.log(`message cannot be converted to JSON: ${message}`)
         }
-        if(topic == "CHANGE_DETECTED") {
-            var newGPIOs = GPIOs;
-            newGPIOs[data["pin"]] = data["state"];
-            setGPIOs(newGPIOs);
+        if(topic === "CHANGE_DETECTED") {
+            switch(data["pin"]) {
+                case 2:
+                    setOut1(data["state"]);
+                break;
+                case 3:
+                    setOut2(data["state"]);
+                break;
+                case 14:
+                    setIn1(data["state"]);
+                break;
+                case 15:
+                    setIn2(data["state"]);
+                break;
+            }
         }
-        console.log(GPIOs);
     });
 
     const setGPIO = (pin: number, state: boolean) => {
@@ -36,6 +48,6 @@ export function useGpio() {
 
     return {
         setGPIO,
-        GPIOs
+        in1, in2, out1, out2
     };
 }
